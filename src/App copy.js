@@ -1,35 +1,34 @@
-// This is the main component of the app. It contains the AddTask and TaskList components.
-// The tasks state is managed by the useReducer hook, which uses the TasksReducer function to update the state based on the action type.
-// The handleAddTask, handleDeleteTask, and handleChangeTask functions dispatch actions to update the tasks state here.
+// This is a copy of App.js without the useReducer hook.
 
 import AddTask from "./AddTask";
 import TaskList from "./TaskList";
-import TasksReducer from "./TasksReducer";
-import { useReducer } from "react";
+import { useState } from "react";
 
 function App() {
-  const [tasks, dispatch] = useReducer(TasksReducer, initialTasks);
+  const [tasks, setTasks] = useState(initialTasks);
 
   function handleAddTask(text) {
-    dispatch({
-      type: "added",
-      id: nextId++,
-      text: text,
-    });
+    if (!text) {
+      return;
+    }
+    const newTask = { id: nextId++, text: text, done: false };
+    setTasks([...tasks, newTask]);
   }
 
   function handleDeleteTask(id) {
-    dispatch({
-      type: "deleted",
-      id: id,
-    });
+    setTasks(tasks.filter((task) => task.id !== id));
   }
 
   function handleChangeTask(changedTask) {
-    dispatch({
-      type: "changed",
-      changedTask: changedTask,
-    });
+    setTasks(
+      tasks.map((task) => {
+        if (task.id === changedTask.id) {
+          return changedTask;
+        } else {
+          return task;
+        }
+      })
+    );
   }
   return (
     <>
